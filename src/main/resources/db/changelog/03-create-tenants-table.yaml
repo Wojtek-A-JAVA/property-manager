@@ -1,0 +1,68 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tenants-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: tenants
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tenant_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+              - column:
+                  name: company_name
+                  type: varchar(255)
+              - column:
+                  name: tax_id
+                  type: varchar(20)
+                  constraints:
+                    unique: true
+              - column:
+                  name: pesel
+                  type: varchar(11)
+                  constraints:
+                    unique: true
+              - column:
+                  name: contact_first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contact_last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false

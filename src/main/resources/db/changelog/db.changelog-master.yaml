@@ -1,4 +1,10 @@
-#databaseChangeLog:
-#  - include:
-#      file:
-#      relativeToChangelogFile: true
+databaseChangeLog:
+  - include:
+      file: 01-create-properties-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 02-create-units-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 03-create-tenants-table.yaml
+      relativeToChangelogFile: true
