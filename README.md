@@ -8,17 +8,26 @@ The application is being developed for real use in a property rental business.
 
 The application will help with:
 
-* managing properties and rental units,
-* managing tenants and rental contracts,
-* utility settlements,
-* repair and maintenance history,
-* reminders and important dates,
-* financial and operational reports,
-* integration with external services such as wFirma,
-* Telegram notifications,
-* generating documents and messages.
+- managing properties and rental units,
+- managing tenants and leases,
+- utility settlements,
+- repair and maintenance history,
+- reminders and important dates,
+- financial and operational reports,
+- integration with external services such as wFirma,
+- Telegram notifications,
+- generating documents and messages.
 
-## Planned technologies
+## Current modules
+
+- Property
+- Unit
+- Tenant
+- Lease
+
+The application currently supports basic management of properties, units, tenants and leases, including validation, status handling and lease filtering.
+
+## Technologies
 
 - Java 21
 - Spring Boot
@@ -33,15 +42,17 @@ The application will help with:
 - Hetzner VPS
 - Nginx Proxy Manager
 
-## Development approach
+## Planned development
 
-The application will be developed step by step.
+Further modules will include:
 
-The first version will focus on the basic domain:
+- utilities and settlements,
+- maintenance and expenses,
+- reminders and documents,
+- lease amendment history,
+- reports and dashboard,
+- notifications,
+- Telegram integration,
+- wFirma API integration.
 
-* Property
-* Unit
-* Tenant
-* Rental Contract
-
-Further modules will be added gradually after the basic functionality is complete.
+The project is under active development.
