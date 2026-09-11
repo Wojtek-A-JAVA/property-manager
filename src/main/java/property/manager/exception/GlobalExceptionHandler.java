@@ -17,17 +17,6 @@ import tools.jackson.databind.exc.InvalidFormatException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<ErrorResponseDto> handleValidationExceptions(
-//            HttpServletRequest request, MethodArgumentNotValidException ex) {
-//        String message = ex.getBindingResult()
-//                .getAllErrors()
-//                .getFirst()
-//                .getDefaultMessage();
-//        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, message
-//        );
-//    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationExceptions(
             HttpServletRequest request, MethodArgumentNotValidException ex) {
@@ -50,9 +39,21 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(request, HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(InactiveEntityException.class)
+    public ResponseEntity<ErrorResponseDto> handleInactiveEntityException(
+            HttpServletRequest request, InactiveEntityException ex) {
+        return buildErrorResponse(request, HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(InvalidTenantDataException.class)
     public ResponseEntity<ErrorResponseDto> handleInvalidTenantDataException(
             HttpServletRequest request, InvalidTenantDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidLeaseDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidLeaseDataException(
+            HttpServletRequest request, InvalidLeaseDataException ex) {
         return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-leases-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: leases
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tenant_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: date
+              - column:
+                  name: rent_net_amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: additional_costs_net_amount
+                  type: decimal(10,2)
+              - column:
+                  name: deposit_amount
+                  type: decimal(10,2)
+              - column:
+                  name: vat_rate
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_due_day
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lease_status
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: leases
+            baseColumnNames: tenant_id
+            referencedTableName: tenants
+            referencedColumnNames: id
+            constraintName: fk_leases_tenant
+        - addForeignKeyConstraint:
+            baseTableName: leases
+            baseColumnNames: unit_id
+            referencedTableName: units
+            referencedColumnNames: id
+            constraintName: fk_leases_unit

@@ -8,3 +8,9 @@ databaseChangeLog:
   - include:
       file: 03-create-tenants-table.yaml
       relativeToChangelogFile: true
+  - include:
+      file: 04-create-leases-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 99-insert-to-tables.yaml
+      relativeToChangelogFile: true

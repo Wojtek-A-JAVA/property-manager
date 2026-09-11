@@ -41,7 +41,7 @@ public class TenantController {
     }
 
     @PatchMapping("/{id}/active")
-    public  TenantResponseDto toggleTenantActiveStatus(@PathVariable Long id) {
+    public TenantResponseDto toggleTenantActiveStatus(@PathVariable Long id) {
         return tenantService.toggleActiveStatus(id);
     }
 
