@@ -36,6 +36,9 @@ public class LeaseServiceImpl implements LeaseService {
 
     @Override
     public LeaseResponseDto createLease(CreateLeaseRequestDto request) {
+        if (request.endDate() == null && request.noticePeriodMonths() == null) {
+            throw new InvalidLeaseDataException("Open-ended lease requires notice period");
+        }
         checkDates(request.startDate(), request.endDate());
         Tenant tenant = getActiveTenant(request.tenantId());
         Unit unit = getAvailableUnit(request);

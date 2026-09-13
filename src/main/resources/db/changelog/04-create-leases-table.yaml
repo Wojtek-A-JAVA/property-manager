@@ -53,6 +53,9 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: notice_period_months
+                  type: int
+              - column:
                   name: lease_status
                   type: varchar(50)
                   constraints:

@@ -55,6 +55,9 @@ public class Lease {
     @Column(name = "payment_due_day", nullable = false)
     private Integer paymentDueDay;
 
+    @Column(name = "notice_period_months")
+    private Integer noticePeriodMonths;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "lease_status", nullable = false)
     private LeaseStatus leaseStatus = LeaseStatus.ACTIVE;

@@ -11,8 +11,6 @@ public record LeaseFilterDto(
         VatRate vatRate,
         LocalDate startDate,
         LocalDate endDate,
-        boolean openEnded
-
-
+        Boolean openEnded
 ) {
 }

@@ -12,5 +12,12 @@ databaseChangeLog:
       file: 04-create-leases-table.yaml
       relativeToChangelogFile: true
   - include:
+      file: 05-create-meters-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 06-create-meter-readings-table.yaml
+      relativeToChangelogFile: true
+  - include:
       file: 99-insert-to-tables.yaml
       relativeToChangelogFile: true
+      contextFilter: dev

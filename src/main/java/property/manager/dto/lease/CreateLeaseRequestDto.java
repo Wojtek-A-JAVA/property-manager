@@ -30,6 +30,8 @@ public record CreateLeaseRequestDto(
         @Min(1)
         @Max(31)
         Integer paymentDueDay,
+        @Min(1)
+        Integer noticePeriodMonths,
         LeaseStatus leaseStatus,
         String notes
 ) {

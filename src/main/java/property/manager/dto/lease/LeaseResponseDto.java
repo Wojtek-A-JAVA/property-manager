@@ -16,6 +16,7 @@ public record LeaseResponseDto(
         BigDecimal depositAmount,
         VatRate vatRate,
         Integer paymentDueDay,
+        Integer noticePeriodMonths,
         LeaseStatus leaseStatus,
         String notes
 ) {
