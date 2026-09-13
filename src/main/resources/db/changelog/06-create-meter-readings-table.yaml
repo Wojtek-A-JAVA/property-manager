@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-meter-readings-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: meter_readings
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: meter_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reading_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: decimal(10,3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: meter_readings
+            baseColumnNames: meter_id
+            referencedTableName: meters
+            referencedColumnNames: id
+            constraintName: fk_readings_meters

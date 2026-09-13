@@ -57,6 +57,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidMeterDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidMeterDataException(
+            HttpServletRequest request, InvalidMeterDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(
             HttpServletRequest request, HttpMessageNotReadableException ex) {

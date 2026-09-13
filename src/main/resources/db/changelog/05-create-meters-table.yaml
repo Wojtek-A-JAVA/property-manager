@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-meters-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: meters
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: property_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+              - column:
+                  name: measurement_type 
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: purpose
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: meters
+            baseColumnNames: property_id
+            referencedTableName: properties
+            referencedColumnNames: id
+            constraintName: fk_meters_property
+        - addForeignKeyConstraint:
+            baseTableName: meters
+            baseColumnNames: unit_id
+            referencedTableName: units
+            referencedColumnNames: id
+            constraintName: fk_meters_unit                    
