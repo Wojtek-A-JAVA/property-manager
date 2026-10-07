@@ -11,6 +11,6 @@ public record MeterResponseDto(
         MeterPurpose purpose,
         String name,
         String notes,
-        boolean active
+        Boolean active
 ) {
 }

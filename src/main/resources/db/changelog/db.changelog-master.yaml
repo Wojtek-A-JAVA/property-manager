@@ -18,6 +18,28 @@ databaseChangeLog:
       file: 06-create-meter-readings-table.yaml
       relativeToChangelogFile: true
   - include:
+      file: 07-create-utility-rules-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 08-create-utility-rule-units-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 09-create-suppliers-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 10-create-utility-invoices-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 11-create-property-costs-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 12-create-unit-costs-table.yaml
+      relativeToChangelogFile: true
+  - include:
       file: 99-insert-to-tables.yaml
+      relativeToChangelogFile: true
+      contextFilter: dev
+  - include:
+      file: 100-insert-to-tables.yaml
       relativeToChangelogFile: true
       contextFilter: dev

@@ -13,5 +13,8 @@ public interface MeterReadingRepository extends JpaRepository<MeterReading, Long
 
     boolean existsByMeterIdAndReadingDate(Long meterId, LocalDate readingDate);
 
-    Optional<MeterReading> findById(Long id);
+    Optional<MeterReading> findByMeterIdAndReadingDate(Long meterId, LocalDate readingDate);
+
+    Optional<MeterReading> findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
+            Long meterId, LocalDate localDate);
 }

@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: utility-invoices-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: utility_invoices
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: property_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: utility_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: supplier_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: invoice_number
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: invoice_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: billing_from
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: billing_to
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: consumption
+                  type: decimal(10,3)
+              - column:
+                  name: unit_price
+                  type: decimal(10,2)
+              - column:
+                  name: notes
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: utility_invoices
+            baseColumnNames: property_id
+            referencedTableName: properties
+            referencedColumnNames: id
+            constraintName: fk_utility_invoices_properties
+        - addForeignKeyConstraint:
+            baseTableName: utility_invoices
+            baseColumnNames: supplier_id
+            referencedTableName: suppliers
+            referencedColumnNames: id
+            constraintName: fk_utility_invoices_suppliers

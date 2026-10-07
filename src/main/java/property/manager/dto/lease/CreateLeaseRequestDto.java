@@ -4,6 +4,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import property.manager.model.LeaseStatus;
@@ -11,8 +12,10 @@ import property.manager.model.VatRate;
 
 public record CreateLeaseRequestDto(
         @NotNull
+        @Positive
         Long tenantId,
         @NotNull
+        @Positive
         Long unitId,
         @NotNull
         LocalDate startDate,

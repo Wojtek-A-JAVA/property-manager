@@ -15,6 +15,6 @@ public record TenantResponseDto(
         String address,
         String email,
         String phone,
-        boolean active
+        Boolean active
 ) {
 }

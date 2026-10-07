@@ -12,7 +12,7 @@ import property.manager.model.Meter;
 public interface MeterMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "active", constant = "true")
     @Mapping(target = "property", ignore = true)
     @Mapping(target = "unit", ignore = true)
     Meter toEntity(CreateMeterRequestDto requestDto);

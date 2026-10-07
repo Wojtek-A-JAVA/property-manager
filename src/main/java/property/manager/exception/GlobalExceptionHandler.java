@@ -63,6 +63,36 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidUtilityRuleDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidUtilityRuleSDataException(
+            HttpServletRequest request, InvalidUtilityRuleDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidUtilityInvoiceDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidUtilityInvoiceDataException(
+            HttpServletRequest request, InvalidUtilityInvoiceDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidSupplierDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidSupplierDataException(
+            HttpServletRequest request, InvalidSupplierDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPropertyCostDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidPropertyCostDataException(
+            HttpServletRequest request, InvalidPropertyCostDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidUnitCostDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidUnitCostDataException(
+            HttpServletRequest request, InvalidUnitCostDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(
             HttpServletRequest request, HttpMessageNotReadableException ex) {

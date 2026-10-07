@@ -10,6 +10,6 @@ public record UnitResponseDto(
         String unitNumber,
         UnitType type,
         BigDecimal area,
-        boolean active
+        Boolean active
 ) {
 }

@@ -1,8 +1,10 @@
 package property.manager.controler;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,5 +29,15 @@ public class UnitController {
     @GetMapping("/{id}")
     public UnitResponseDto getUnit(@PathVariable Long id) {
         return unitService.getUnit(id);
+    }
+
+    @GetMapping
+    public List<UnitResponseDto> getUnits() {
+        return unitService.getUnits();
+    }
+
+    @PatchMapping("/{id}/active")
+    public UnitResponseDto toggleUnitActiveStatus(@PathVariable Long id) {
+        return unitService.toggleActiveStatus(id);
     }
 }

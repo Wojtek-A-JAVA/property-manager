@@ -8,9 +8,5 @@ import property.manager.model.Property;
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long> {
 
-    boolean existsByNameAndAddress(String name, String address);
-
     Optional<Property> findByNameAndAddress(String name, String address);
-
-    Optional<Property> findById(Long id);
 }

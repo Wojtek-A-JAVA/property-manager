@@ -1,8 +1,10 @@
 package property.manager.controler;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +23,22 @@ public class PropertyController {
 
     @PostMapping
     public PropertyResponseDto createProperty(@RequestBody @Valid
-                                                  CreatePropertyRequestDto request) {
+                                              CreatePropertyRequestDto request) {
         return propertyService.createProperty(request);
     }
 
     @GetMapping("/{id}")
     public PropertyResponseDto getProperty(@PathVariable Long id) {
         return propertyService.getProperty(id);
+    }
+
+    @GetMapping
+    public List<PropertyResponseDto> getProperties() {
+        return propertyService.getProperties();
+    }
+
+    @PatchMapping("/{id}/active")
+    public PropertyResponseDto togglePropertyActiveStatus(@PathVariable Long id) {
+        return propertyService.toggleActiveStatus(id);
     }
 }

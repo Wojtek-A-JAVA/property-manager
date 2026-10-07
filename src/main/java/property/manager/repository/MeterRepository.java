@@ -3,6 +3,7 @@ package property.manager.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import property.manager.model.MeasurementType;
 import property.manager.model.Meter;
@@ -18,5 +19,18 @@ public interface MeterRepository extends JpaRepository<Meter, Long>,
     boolean existsByPropertyIdAndUnitIsNullAndMeasurementTypeAndPurposeAndActiveTrue(
             Long propertyId, MeasurementType measurementType, MeterPurpose purpose);
 
-    Optional<Meter> findById(Long id);
+    Optional<Meter> findByUnitIdAndPurposeAndMeasurementTypeAndActiveTrue(
+            Long unitId, MeterPurpose purpose, MeasurementType measurementType);
+
+    @Query("""
+            SELECT m
+            FROM Meter m
+            WHERE m.property.id = :propertyId
+              AND m.unit IS NULL
+              AND m.measurementType = :measurementType
+              AND m.purpose = :purpose
+              AND m.active = true
+            """)
+    Optional<Meter> findPropertyMeter(
+            Long propertyId, MeasurementType measurementType, MeterPurpose purpose);
 }

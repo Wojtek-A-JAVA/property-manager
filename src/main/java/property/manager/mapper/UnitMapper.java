@@ -1,5 +1,6 @@
 package property.manager.mapper;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import property.manager.config.MapperConfig;
@@ -17,4 +18,7 @@ public interface UnitMapper {
 
     @Mapping(target = "propertyId", source = "property.id")
     UnitResponseDto toDto(Unit unit);
+
+    @Mapping(target = "propertyId", source = "property.id")
+    List<UnitResponseDto> toDtoList(List<Unit> units);
 }

@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: unit-costs-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: unit_costs
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: property_cost_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: utility_rule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: meter_id
+                  type: bigint
+              - column:
+                  name: amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: consumption
+                  type: decimal(10,3)
+              - column:
+                  name: billing_month
+                  type: varchar(7)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: unit_costs
+            baseColumnNames: unit_id
+            referencedTableName: units
+            referencedColumnNames: id
+            constraintName: fk_unit_costs_units
+        - addForeignKeyConstraint:
+            baseTableName: unit_costs
+            baseColumnNames: property_cost_id
+            referencedTableName: property_costs
+            referencedColumnNames: id
+            constraintName: fk_unit_costs_property_costs
+        - addForeignKeyConstraint:
+            baseTableName: unit_costs
+            baseColumnNames: utility_rule_id
+            referencedTableName: utility_rules
+            referencedColumnNames: id
+            constraintName: fk_unit_costs_utility_rules
+        - addForeignKeyConstraint:
+            baseTableName: unit_costs
+            baseColumnNames: meter_id
+            referencedTableName: meters
+            referencedColumnNames: id
+            constraintName: fk_unit_costs_meters

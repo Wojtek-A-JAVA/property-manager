@@ -1,5 +1,6 @@
 package property.manager.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,9 +51,27 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public UnitResponseDto getUnit(Long id) {
-        Unit unit = unitRepository.findById(id).orElseThrow(
+        Unit unit = findUnit(id);
+        return unitMapper.toDto(unit);
+    }
+
+    @Override
+    public List<UnitResponseDto> getUnits() {
+        List<Unit> units = unitRepository.findAll();
+        return unitMapper.toDtoList(units);
+    }
+
+    @Override
+    public UnitResponseDto toggleActiveStatus(Long id) {
+        Unit unit = findUnit(id);
+        unit.setActive(!unit.isActive());
+        Unit savedUnit = unitRepository.save(unit);
+        return unitMapper.toDto(savedUnit);
+    }
+
+    private Unit findUnit(Long id) {
+        return unitRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Unit with id " + id + " not found in database")
         );
-        return unitMapper.toDto(unit);
     }
 }

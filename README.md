@@ -24,8 +24,31 @@ The application will help with:
 - Unit
 - Tenant
 - Lease
+- Meter
+- Meter Reading
+- Supplier
+- Utility Invoice
+- Utility Rule
+- Property Cost
+- Unit Cost
 
-The application currently supports basic management of properties, units, tenants and leases, including validation, status handling and lease filtering.
+The application currently supports property, unit, tenant and lease management, as well as the core utility settlement domain.
+
+Utility-related functionality includes:
+
+- supplier management,
+- utility invoices,
+- meter and meter reading management,
+- configurable utility allocation rules,
+- monthly property costs,
+- unit-level cost calculation,
+- multiple allocation methods, including:
+    - equal split per unit,
+    - area-based allocation,
+    - submeter-based usage,
+    - source-meter usage allocated by area.
+
+The application includes validation, duplicate protection, entity status handling and filtering for selected modules.
 
 ## Technologies
 
@@ -36,6 +59,8 @@ The application currently supports basic management of properties, units, tenant
 - Spring Security
 - REST API
 - Maven
+- MapStruct
+- Hibernate / JPA
 - Swagger / OpenAPI
 - Docker
 - Docker Compose
@@ -44,9 +69,9 @@ The application currently supports basic management of properties, units, tenant
 
 ## Planned development
 
-Further modules will include:
+Further development will include:
 
-- utilities and settlements,
+- settlement orchestration and recalculation,
 - maintenance and expenses,
 - reminders and documents,
 - lease amendment history,

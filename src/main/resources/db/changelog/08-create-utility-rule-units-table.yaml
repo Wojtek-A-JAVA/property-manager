@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: utility-rule-units-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: utility_rule_units
+            columns:
+              - column:
+                  name: utility_rule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: utility_rule_units
+            baseColumnNames: utility_rule_id
+            referencedTableName: utility_rules
+            referencedColumnNames: id
+            constraintName: fk_utility_rule_units_utility_rules
+        - addForeignKeyConstraint:
+            baseTableName: utility_rule_units
+            baseColumnNames: unit_id
+            referencedTableName: units
+            referencedColumnNames: id
+            constraintName: fk_utility_rule_units_units
+        - addUniqueConstraint:
+            tableName: utility_rule_units
+            columnNames: utility_rule_id, unit_id
+            constraintName: uk_utility_rule_units_rule_unit

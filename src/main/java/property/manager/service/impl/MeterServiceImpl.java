@@ -1,7 +1,10 @@
 package property.manager.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -95,6 +98,7 @@ public class MeterServiceImpl implements MeterService {
         if (!meter.isActive()) {
             throw new InactiveEntityException("Meter with id " + id + " is inactive");
         }
+        checkReadingValues(meter.getId(), request);
         MeterReading meterReading = meterReadingMapper.toEntity(request);
         meterReading.setMeter(meter);
         MeterReading savedMeterReading = meterReadingRepository.save(meterReading);
@@ -123,9 +127,9 @@ public class MeterServiceImpl implements MeterService {
 
     private void checkDuplicates(CreateMeterRequestDto request) {
         String endMessageException = " for measurement type "
-                + request.measurementType().name().toLowerCase() + " for "
-                + request.purpose().name().toLowerCase() + " purpose"
-                + " is already in database";
+                + request.measurementType().name().toLowerCase(Locale.ROOT).replace('_', ' ')
+                + " for " + request.purpose().name().toLowerCase(Locale.ROOT).replace('_', ' ')
+                + " purpose is already in database";
         if (request.unitId() == null) {
             if (meterRepository
                     .existsByPropertyIdAndUnitIsNullAndMeasurementTypeAndPurposeAndActiveTrue(
@@ -178,6 +182,19 @@ public class MeterServiceImpl implements MeterService {
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
             throw new InvalidMeterDataException("Meter reading end date " + endDate
                     + " is before start date " + startDate);
+        }
+    }
+
+    private void checkReadingValues(Long meterId, CreateMeterReadingRequestDto request) {
+        Optional<MeterReading> previousValue = meterReadingRepository
+                .findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
+                        meterId, request.readingDate());
+        if (previousValue.isPresent()) {
+            BigDecimal result = request.value().subtract(previousValue.get().getValue());
+            if (result.compareTo(BigDecimal.ZERO) < 0) {
+                throw new InvalidMeterDataException("Reading value can't be smaller than "
+                        + "last value");
+            }
         }
     }
 }

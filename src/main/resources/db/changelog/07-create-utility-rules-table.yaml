@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: utility-rules-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: utility_rules
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: property_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: utility_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: allocation_method
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_meter_required
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: property_meter_required
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: measurement_type
+                  type: varchar(50)
+              - column:
+                  name: meter_purpose
+                  type: varchar(50)
+              - column:
+                  name: start_month
+                  type: varchar(7)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_month
+                  type: varchar(7)
+              - column:
+                  name: notes
+                  type: varchar(255)
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: utility_rules
+            baseColumnNames: property_id
+            referencedTableName: properties
+            referencedColumnNames: id
+            constraintName: fk_utility_rules_properties
+  - changeSet:
+      id: add-utility-rule-meter-check
+      author: wojtek-a
+      changes:
+        - sql:
+            sql: >
+              ALTER TABLE utility_rules
+              ADD CONSTRAINT chk_utility_rule_meter_required
+              CHECK (NOT (unit_meter_required AND property_meter_required));
