@@ -93,6 +93,12 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidSettlementDataException.class)
+    public ResponseEntity<ErrorResponseDto> handleInvalidSettlementDataException(
+            HttpServletRequest request, InvalidSettlementDataException ex) {
+        return buildErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(
             HttpServletRequest request, HttpMessageNotReadableException ex) {

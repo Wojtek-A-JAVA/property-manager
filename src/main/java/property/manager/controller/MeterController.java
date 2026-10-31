@@ -1,4 +1,4 @@
-package property.manager.controler;
+package property.manager.controller;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -17,6 +17,7 @@ import property.manager.dto.meter.MeterFilterDto;
 import property.manager.dto.meter.MeterReadingFilterDto;
 import property.manager.dto.meter.MeterReadingResponseDto;
 import property.manager.dto.meter.MeterResponseDto;
+import property.manager.dto.meter.UpdateMeterReadingRequestDto;
 import property.manager.service.MeterService;
 
 @RestController
@@ -61,5 +62,12 @@ public class MeterController {
     public List<MeterReadingResponseDto> getReadings(
             @ModelAttribute MeterReadingFilterDto filter) {
         return meterService.getReadings(filter);
+    }
+
+    @PatchMapping("/readings/{readingId}")
+    public MeterReadingResponseDto updateReading(
+            @PathVariable Long readingId,
+            @RequestBody @Valid UpdateMeterReadingRequestDto request) {
+        return meterService.updateReadings(readingId, request);
     }
 }

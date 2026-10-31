@@ -17,6 +17,8 @@ public record CreateUtilityRuleRequestDto(
         @NotNull
         UtilityType utilityType,
         @NotNull
+        UtilityType invoiceUtilityType,
+        @NotNull
         AllocationMethod allocationMethod,
         @NotNull
         Boolean unitMeterRequired,

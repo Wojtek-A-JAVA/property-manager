@@ -11,6 +11,7 @@ public record UtilityRuleResponseDto(
         Long id,
         Long propertyId,
         UtilityType utilityType,
+        UtilityType invoiceUtilityType,
         AllocationMethod allocationMethod,
         Boolean unitMeterRequired,
         Boolean propertyMeterRequired,

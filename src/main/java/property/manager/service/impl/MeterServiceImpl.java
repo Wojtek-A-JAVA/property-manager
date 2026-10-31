@@ -14,6 +14,7 @@ import property.manager.dto.meter.MeterFilterDto;
 import property.manager.dto.meter.MeterReadingFilterDto;
 import property.manager.dto.meter.MeterReadingResponseDto;
 import property.manager.dto.meter.MeterResponseDto;
+import property.manager.dto.meter.UpdateMeterReadingRequestDto;
 import property.manager.exception.EntityAlreadyExistsException;
 import property.manager.exception.EntityNotFoundException;
 import property.manager.exception.InactiveEntityException;
@@ -60,7 +61,7 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public MeterResponseDto getMeterById(Long id) {
-        Meter meter = findMeterById(id);
+        Meter meter = getMeterEntityById(id);
         return meterMapper.toDto(meter);
     }
 
@@ -77,7 +78,7 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public MeterResponseDto toggleMeterActiveStatus(Long id) {
-        Meter meter = findMeterById(id);
+        Meter meter = getMeterEntityById(id);
         meter.setActive(!meter.isActive());
         Meter savedMeter = meterRepository.save(meter);
         return meterMapper.toDto(savedMeter);
@@ -94,11 +95,11 @@ public class MeterServiceImpl implements MeterService {
         if (request.readingDate().isAfter(LocalDate.now())) {
             throw new InvalidMeterDataException("Meter reading is after today");
         }
-        Meter meter = findMeterById(id);
+        Meter meter = getMeterEntityById(id);
         if (!meter.isActive()) {
             throw new InactiveEntityException("Meter with id " + id + " is inactive");
         }
-        checkReadingValues(meter.getId(), request);
+        checkReadingValues(meter.getId(), request.value(), request.readingDate());
         MeterReading meterReading = meterReadingMapper.toEntity(request);
         meterReading.setMeter(meter);
         MeterReading savedMeterReading = meterReadingRepository.save(meterReading);
@@ -107,10 +108,7 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public MeterReadingResponseDto getReadingById(Long readingId) {
-        MeterReading meterReading = meterReadingRepository.findById(readingId).orElseThrow(
-                () -> new EntityNotFoundException("Meter reading with id " + readingId
-                        + " doesn't exist in database")
-        );
+        MeterReading meterReading = getReadingEntityById(readingId);
         return meterReadingMapper.toDto(meterReading);
     }
 
@@ -123,6 +121,32 @@ public class MeterServiceImpl implements MeterService {
                         .isWithinPeriod(filter.fromDate(), filter.toDate()));
         List<MeterReading> meterReadings = meterReadingRepository.findAll(specification);
         return meterReadingMapper.toDtoList(meterReadings);
+    }
+
+    @Override
+    public MeterReadingResponseDto updateReadings(
+            Long readingId, UpdateMeterReadingRequestDto request) {
+        MeterReading meterReading = getReadingEntityById(readingId);
+        checkReadingValues(
+                meterReading.getMeter().getId(), request.value(), meterReading.getReadingDate());
+        meterReading.setValue(request.value());
+        meterReading.setNotes(request.notes());
+        MeterReading savedMeterReading = meterReadingRepository.save(meterReading);
+        return meterReadingMapper.toDto(savedMeterReading);
+    }
+
+    @Override
+    public MeterReading getReadingEntityById(Long readingId) {
+        return meterReadingRepository.findById(readingId).orElseThrow(
+                () -> new EntityNotFoundException("Meter reading with id " + readingId
+                        + " doesn't exist in database"));
+    }
+
+    @Override
+    public Meter getMeterEntityById(Long id) {
+        return meterRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Meter with id " + id
+                        + " doesn't exist in database"));
     }
 
     private void checkDuplicates(CreateMeterRequestDto request) {
@@ -171,13 +195,6 @@ public class MeterServiceImpl implements MeterService {
         return unit;
     }
 
-    private Meter findMeterById(Long id) {
-        return meterRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Meter with id " + id
-                        + " doesn't exist in database")
-        );
-    }
-
     private void checkDates(LocalDate startDate, LocalDate endDate) {
         if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
             throw new InvalidMeterDataException("Meter reading end date " + endDate
@@ -185,16 +202,20 @@ public class MeterServiceImpl implements MeterService {
         }
     }
 
-    private void checkReadingValues(Long meterId, CreateMeterReadingRequestDto request) {
+    private void checkReadingValues(Long meterId, BigDecimal value, LocalDate readingDate) {
         Optional<MeterReading> previousValue = meterReadingRepository
                 .findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
-                        meterId, request.readingDate());
-        if (previousValue.isPresent()) {
-            BigDecimal result = request.value().subtract(previousValue.get().getValue());
-            if (result.compareTo(BigDecimal.ZERO) < 0) {
-                throw new InvalidMeterDataException("Reading value can't be smaller than "
-                        + "last value");
-            }
+                        meterId, readingDate);
+        if (previousValue.isPresent() && value.compareTo(previousValue.get().getValue()) < 0) {
+            throw new InvalidMeterDataException("Reading value can't be smaller than "
+                    + "last value");
+        }
+        Optional<MeterReading> nextValue = meterReadingRepository
+                .findFirstByMeterIdAndReadingDateAfterOrderByReadingDateAsc(
+                        meterId, readingDate);
+        if (nextValue.isPresent() && value.compareTo(nextValue.get().getValue()) > 0) {
+            throw new InvalidMeterDataException("Reading value can't be bigger than "
+                    + "next value");
         }
     }
 }

@@ -23,7 +23,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import property.manager.controler.MeterController;
 import property.manager.dto.meter.CreateMeterReadingRequestDto;
 import property.manager.dto.meter.CreateMeterRequestDto;
 import property.manager.dto.meter.MeterFilterDto;

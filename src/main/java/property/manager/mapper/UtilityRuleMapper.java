@@ -17,12 +17,15 @@ public interface UtilityRuleMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "property", ignore = true)
     @Mapping(target = "units", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "active", constant = "true")
     UtilityRule toEntity(CreateUtilityRuleRequestDto request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "property", ignore = true)
     @Mapping(target = "units", ignore = true)
+    @Mapping(target = "notes", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "active", ignore = true)
     void updateEntity(
             UpdateUtilityRuleRequestDto request, @MappingTarget UtilityRule rule);

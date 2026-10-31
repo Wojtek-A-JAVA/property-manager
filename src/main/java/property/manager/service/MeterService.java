@@ -7,6 +7,9 @@ import property.manager.dto.meter.MeterFilterDto;
 import property.manager.dto.meter.MeterReadingFilterDto;
 import property.manager.dto.meter.MeterReadingResponseDto;
 import property.manager.dto.meter.MeterResponseDto;
+import property.manager.dto.meter.UpdateMeterReadingRequestDto;
+import property.manager.model.Meter;
+import property.manager.model.MeterReading;
 
 public interface MeterService {
 
@@ -23,4 +26,10 @@ public interface MeterService {
     MeterReadingResponseDto getReadingById(Long readingId);
 
     List<MeterReadingResponseDto> getReadings(MeterReadingFilterDto filter);
+
+    MeterReadingResponseDto updateReadings(Long readingId, UpdateMeterReadingRequestDto request);
+
+    MeterReading getReadingEntityById(Long readingId);
+
+    Meter getMeterEntityById(Long id);
 }

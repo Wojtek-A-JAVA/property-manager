@@ -24,6 +24,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: invoice_utility_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
                   name: allocation_method
                   type: varchar(50)
                   constraints:
@@ -59,6 +64,11 @@ databaseChangeLog:
                   name: active
                   type: boolean
                   defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:

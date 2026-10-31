@@ -1,5 +1,6 @@
 package property.manager.service;
 
+import java.time.YearMonth;
 import java.util.List;
 import property.manager.dto.cost.property.CreatePropertyCostRequestDto;
 import property.manager.dto.cost.property.PropertyCostFilterDto;
@@ -18,4 +19,11 @@ public interface PropertyCostService {
     List<PropertyCostResponseDto> updatePropertyCost(Long id, UpdatePropertyCostRequestDto request);
 
     List<PropertyCost> createPropertyCosts(UtilityInvoice utilityInvoice);
+
+    List<PropertyCost> getPropertyCostsEntities(Long id);
+
+    void deletePropertyCostsByUtilityInvoiceId(Long id);
+
+    List<PropertyCost> getOrCreatePropertyCosts(
+            List<UtilityInvoice> invoices, YearMonth billingMonth);
 }

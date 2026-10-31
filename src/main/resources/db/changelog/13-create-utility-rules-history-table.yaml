@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: utility-rules-history
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: utility_rules_history
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: utility_rule_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: property_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: utility_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: invoice_utility_type
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: allocation_method
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_meter_required
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: property_meter_required
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: measurement_type
+                  type: varchar(50)
+              - column:
+                  name: meter_purpose
+                  type: varchar(50)
+              - column:
+                  name: start_month
+                  type: varchar(7)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_month
+                  type: varchar(7)
+              - column:
+                  name: notes
+                  type: varchar(255)
+              - column:
+                  name: active
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rule_created_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: archived_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false

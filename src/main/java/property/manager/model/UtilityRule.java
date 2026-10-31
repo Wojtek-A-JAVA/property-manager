@@ -13,11 +13,13 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.Instant;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "utility_rules")
@@ -35,6 +37,10 @@ public class UtilityRule {
     @Enumerated(EnumType.STRING)
     @Column(name = "utility_type", nullable = false)
     private UtilityType utilityType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "invoice_utility_type", nullable = false)
+    private UtilityType invoiceUtilityType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "allocation_method", nullable = false)
@@ -70,4 +76,8 @@ public class UtilityRule {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 }

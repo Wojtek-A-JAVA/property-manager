@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import property.manager.dto.utility.rule.CreateUtilityRuleRequestDto;
 import property.manager.dto.utility.rule.UpdateUtilityRuleRequestDto;
 import property.manager.dto.utility.rule.UtilityRuleEndMonthRequestDto;
@@ -20,6 +21,7 @@ import property.manager.exception.EntityAlreadyExistsException;
 import property.manager.exception.EntityNotFoundException;
 import property.manager.exception.InactiveEntityException;
 import property.manager.exception.InvalidUtilityRuleDataException;
+import property.manager.mapper.UtilityRuleHistoryMapper;
 import property.manager.mapper.UtilityRuleMapper;
 import property.manager.model.AllocationMethod;
 import property.manager.model.MeasurementType;
@@ -27,9 +29,11 @@ import property.manager.model.MeterPurpose;
 import property.manager.model.Property;
 import property.manager.model.Unit;
 import property.manager.model.UtilityRule;
+import property.manager.model.UtilityRuleHistory;
 import property.manager.model.UtilityType;
 import property.manager.repository.PropertyRepository;
 import property.manager.repository.UnitRepository;
+import property.manager.repository.UtilityRuleHistoryRepository;
 import property.manager.repository.UtilityRuleRepository;
 import property.manager.service.UtilityRuleService;
 
@@ -41,6 +45,8 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
     private final PropertyRepository propertyRepository;
     private final UtilityRuleMapper utilityRuleMapper;
     private final UnitRepository unitRepository;
+    private final UtilityRuleHistoryMapper utilityRuleHistoryMapper;
+    private final UtilityRuleHistoryRepository utilityRuleHistoryRepository;
 
     @Override
     public UtilityRuleResponseDto createUtilityRule(
@@ -95,22 +101,73 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
     }
 
     @Override
+    @Transactional
     public UtilityRuleResponseDto updateUtilityRule(
             Long id, UpdateUtilityRuleRequestDto request) {
         validateMeterRequired(request.unitMeterRequired(), request.propertyMeterRequired(),
                 request.measurementType(), request.meterPurpose());
         checkDates(request.startMonth(), request.endMonth());
         checkDuplicate(id, request);
-        Property property = getProperty(request.propertyId());
+        final Property property = getProperty(request.propertyId());
         UtilityRule rule = findUtilityRule(id);
         List<Unit> units = getAndValidateUnits(request.unitIds(), request.propertyId());
         checkAllocationMethod(request.allocationMethod(), request.unitMeterRequired(),
                 request.propertyMeterRequired(), units);
+        utilityRuleHistoryRepository.save(utilityRuleHistoryMapper.toHistory(rule));
         utilityRuleMapper.updateEntity(request, rule);
         rule.setProperty(property);
         rule.setUnits(units);
         UtilityRule savedRule = utilityRuleRepository.save(rule);
         return utilityRuleMapper.toDto(savedRule);
+    }
+
+    @Override
+    public UtilityRule findUtilityRule(Long id) {
+        return utilityRuleRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Property utility rule with id "
+                        + id + " doesn't exist in database"));
+    }
+
+    @Override
+    public UtilityRuleHistory findUtilityRuleHistory(Long utilityRuleId) {
+        return utilityRuleHistoryRepository
+                .findFirstByUtilityRuleIdOrderByArchivedAtDesc(utilityRuleId)
+                .orElseThrow(() -> new EntityNotFoundException("Utility rule history with utility "
+                        + "rule id " + utilityRuleId + " doesn't exist in database"));
+    }
+
+    @Override
+    public void checkUtilityRuleExistsInPast(
+            Long propertyId, UtilityType utilityType, YearMonth startMonth, YearMonth endMonth) {
+        if (!utilityRuleRepository.existsPastRuleCoveringRange(
+                propertyId, utilityType, startMonth, endMonth)) {
+            throw new InvalidUtilityRuleDataException("There is a gap in utility rules between "
+                    + startMonth + " and " + endMonth);
+        }
+    }
+
+    @Override
+    public void checkUtilityRuleExistsInFuture(
+            Long propertyId, UtilityType utilityType, YearMonth startMonth, YearMonth endMonth) {
+        if (!utilityRuleRepository.existsFutureRuleInCoveringRange(
+                propertyId, utilityType, startMonth, endMonth)) {
+            throw new InvalidUtilityRuleDataException("There is a gap in utility rules between "
+                    + startMonth + " and " + endMonth);
+        }
+    }
+
+    @Override
+    public UtilityRule findUtilityRuleByMeterData(
+            Long propertyId, MeasurementType measurementType, MeterPurpose meterPurpose,
+            boolean unitMeterRequired, YearMonth billingMonth) {
+        return utilityRuleRepository.findUtilityRuleByMeterData(
+                        propertyId, measurementType, meterPurpose, unitMeterRequired, billingMonth)
+                .orElseThrow(() -> new EntityNotFoundException("Utility rule for property with id "
+                        + propertyId + ", measurement type "
+                        + measurementType.name().toLowerCase(Locale.ROOT).replace('_', ' ')
+                        + " and meter purpose "
+                        + meterPurpose.name().toLowerCase(Locale.ROOT).replace('_', ' ')
+                        + " date " + billingMonth + " doesn't exist in database"));
     }
 
     private void validateMeterRequired(boolean unitMeterRequired, boolean propertyMeterRequired,
@@ -127,7 +184,7 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
         if ((!unitMeterRequired && !propertyMeterRequired)
                 && (measurementType != null || purpose != null)) {
             throw new InvalidUtilityRuleDataException("If meter is  not required measurement type"
-            + " and meter purpose must be null");
+                    + " and meter purpose must be null");
         }
     }
 
@@ -141,8 +198,8 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
     private void checkDuplicate(CreateUtilityRuleRequestDto request) {
         List<UtilityRule> overlappingRules =
                 utilityRuleRepository.findOverlappingRules(
-                        request.propertyId(), request.utilityType(), request.startMonth(),
-                        request.endMonth());
+                        request.propertyId(), request.utilityType(), request.invoiceUtilityType(),
+                        request.startMonth(), request.endMonth());
         if (!overlappingRules.isEmpty()) {
             throw new EntityAlreadyExistsException(
                     "Property utility rule for property with id " + request.propertyId()
@@ -154,8 +211,8 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
     private void checkDuplicate(Long id, UpdateUtilityRuleRequestDto request) {
         List<UtilityRule> overlappingRules =
                 utilityRuleRepository.findOverlappingRulesExcludingId(
-                        request.propertyId(), request.utilityType(), request.startMonth(),
-                        request.endMonth(), id);
+                        request.propertyId(), request.utilityType(), request.invoiceUtilityType(),
+                        request.startMonth(), request.endMonth(), id);
         if (!overlappingRules.isEmpty()) {
             throw new EntityAlreadyExistsException(
                     "Property utility rule with id " + id + " for property with id "
@@ -201,12 +258,6 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
         }
     }
 
-    private UtilityRule findUtilityRule(Long id) {
-        return utilityRuleRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Property utility rule with id "
-                        + id + " doesn't exist in database"));
-    }
-
     private List<Unit> getAndValidateUnits(List<Long> unitsIds, Long propertyId) {
         if (new HashSet<>(unitsIds).size() != unitsIds.size()) {
             throw new InvalidUtilityRuleDataException("Unit ids contain duplicates");
@@ -223,5 +274,4 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
         }
         return units;
     }
-
 }

@@ -36,6 +36,12 @@ databaseChangeLog:
       file: 12-create-unit-costs-table.yaml
       relativeToChangelogFile: true
   - include:
+      file: 13-create-utility-rules-history-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 14-create-utility-rules-history-units-table.yaml
+      relativeToChangelogFile: true
+  - include:
       file: 99-insert-to-tables.yaml
       relativeToChangelogFile: true
       contextFilter: dev

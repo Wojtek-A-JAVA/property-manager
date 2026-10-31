@@ -8,6 +8,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -52,22 +53,15 @@ public class UnitCostServiceImpl implements UnitCostService {
     private final MeterReadingRepository meterReadingRepository;
 
     @Override
+    @Transactional
     public UnitCostResponseDto createUnitCost(CreateUnitCostRequestDto request) {
-        Unit unit = getUnit(request.unitId());
-        PropertyCost propertyCost = getPropertyCost(request.propertyCostId(), unit);
-        checkDuplicate(request.unitId(), propertyCost, request.utilityType());
-        UtilityRule utilityRule = getUtilityRule(propertyCost.getProperty().getId(),
-                request.utilityType(), propertyCost.getBillingMonth());
-        checkUnitParticipation(utilityRule, unit);
-        UnitCost unitCost = new UnitCost();
-        unitCost.setUnit(unit);
-        unitCost.setPropertyCost(propertyCost);
-        unitCost.setBillingMonth(propertyCost.getBillingMonth());
-        unitCost.setUtilityRule(utilityRule);
-        setUnitCostAmountAndConsumption(unitCost, utilityRule, propertyCost, unit);
-        unitCost.setNotes(request.notes());
-        UnitCost savedUnitCost = unitCostRepository.save(unitCost);
-        return unitCostMapper.toDto(savedUnitCost);
+        UnitCost unitCost = createUnitCostEntity(
+                request.unitId(), request.propertyCostId(), request.utilityType());
+        if (request.notes() != null) {
+            unitCost.setNotes(request.notes());
+            unitCostRepository.save(unitCost);
+        }
+        return unitCostMapper.toDto(unitCost);
     }
 
     @Override
@@ -92,7 +86,7 @@ public class UnitCostServiceImpl implements UnitCostService {
     }
 
     @Override
-    public List<UnitCostResponseDto> getUnitCosts(UnitCostFilterRequestDto filter) {
+    public List<UnitCostResponseDto> getUnitCostsByUtilityRuleId(UnitCostFilterRequestDto filter) {
         Specification<UnitCost> specification = UnitCostSpecification
                 .hasPropertyId(filter.propertyId())
                 .and(UnitCostSpecification.hasUnitId(filter.unitId()))
@@ -161,6 +155,73 @@ public class UnitCostServiceImpl implements UnitCostService {
             unitCostList.add(savedUnitCost);
         }
         return unitCostList;
+    }
+
+    @Override
+    public void deleteUnitCostsByPropertyCostId(Long propertyCostId) {
+        unitCostRepository.deleteAllByPropertyCost_Id(propertyCostId);
+    }
+
+    @Override
+    public List<UnitCost> getUnitCostsEntitiesByUtilityRuleId(Long utilityRuleId) {
+        return unitCostRepository.findAllByUtilityRule_Id(utilityRuleId);
+    }
+
+    @Override
+    public void deleteUnitCostsByUtilityRuleId(Long utilityRuleId) {
+        unitCostRepository.deleteAllByUtilityRule_Id(utilityRuleId);
+    }
+
+    @Override
+    public void deleteUnitCostById(Long unitCostId) {
+        unitCostRepository.deleteById(unitCostId);
+    }
+
+    @Override
+    public void deleteUnitCostsByPropertyCostIdAndMeterId(Long propertyCostId, Long meterId) {
+        unitCostRepository.deleteAllByPropertyCostIdAndMeterId(propertyCostId, meterId);
+    }
+
+    @Override
+    public UnitCost createUnitCostEntity(
+            Long unitId, Long propertyCostId, UtilityType utilityType) {
+        Unit unit = getUnit(unitId);
+        PropertyCost propertyCost = getPropertyCost(propertyCostId, unit);
+        checkDuplicate(unitId, propertyCost, utilityType);
+        UtilityRule utilityRule = getUtilityRule(propertyCost.getProperty().getId(), utilityType,
+                propertyCost.getBillingMonth());
+        checkUnitParticipation(utilityRule, unit);
+        UnitCost unitCost = new UnitCost();
+        unitCost.setUnit(unit);
+        unitCost.setPropertyCost(propertyCost);
+        unitCost.setBillingMonth(propertyCost.getBillingMonth());
+        unitCost.setUtilityRule(utilityRule);
+        setUnitCostAmountAndConsumption(unitCost, utilityRule, propertyCost, unit);
+        return unitCostRepository.save(unitCost);
+    }
+
+    @Override
+    public UnitCost getUnitCostEntityForUnitAndRule(
+            Long unitId, Long propertyCostId, Long utilityRuleId) {
+        return unitCostRepository.findByUnitIdAndPropertyCostIdAndUtilityRuleId(
+                unitId, propertyCostId, utilityRuleId)
+                .orElseThrow(() -> new EntityNotFoundException("Unit cost with unit id "
+                        + unitId + ", property cost id " + propertyCostId
+                        + " and utility rule id " + utilityRuleId
+                        + " doesn't exist in database"));
+    }
+
+    @Override
+    public Optional<UnitCost> findUnitCostEntityForUnitMeterAndBillingMonth(
+            Long unitId, Long meterId, YearMonth billingMonth) {
+        return unitCostRepository.findByUnitIdAndMeterIdAndBillingMonth(
+                unitId, meterId, billingMonth);
+    }
+
+    @Override
+    public List<UnitCost> findUnitCostEntitiesForPropertyMeterAndBillingMonth(
+            Long meterId, YearMonth billingMonth) {
+        return unitCostRepository.findAllByMeterIdAndBillingMonth(meterId, billingMonth);
     }
 
     private Unit getUnit(Long id) {
@@ -250,8 +311,8 @@ public class UnitCostServiceImpl implements UnitCostService {
 
     private Meter getUnitMeter(Unit unit, UtilityRule utilityRule) {
         return meterRepository.findByUnitIdAndPurposeAndMeasurementTypeAndActiveTrue(
-                unit.getId(), utilityRule.getMeterPurpose(),
-                utilityRule.getMeasurementType())
+                        unit.getId(), utilityRule.getMeterPurpose(),
+                        utilityRule.getMeasurementType())
                 .orElseThrow(() -> new EntityNotFoundException("Meter for unit with id "
                         + unit.getId() + " for " + utilityRule.getMeterPurpose()
                         .name().toLowerCase(Locale.ROOT).replace('_', ' ')
@@ -262,7 +323,7 @@ public class UnitCostServiceImpl implements UnitCostService {
 
     private Meter getPropertyMeter(UtilityRule utilityRule) {
         return meterRepository.findPropertyMeter(utilityRule.getProperty().getId(),
-                utilityRule.getMeasurementType(), utilityRule.getMeterPurpose())
+                        utilityRule.getMeasurementType(), utilityRule.getMeterPurpose())
                 .orElseThrow(() -> new EntityNotFoundException("Meter for property with id "
                         + utilityRule.getProperty().getId() + " for "
                         + utilityRule.getMeterPurpose()

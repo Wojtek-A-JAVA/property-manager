@@ -2,6 +2,7 @@ package property.manager.service.impl;
 
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +19,7 @@ import property.manager.mapper.UtilityInvoiceMapper;
 import property.manager.model.Property;
 import property.manager.model.Supplier;
 import property.manager.model.UtilityInvoice;
+import property.manager.model.UtilityType;
 import property.manager.repository.PropertyRepository;
 import property.manager.repository.SupplierRepository;
 import property.manager.repository.UtilityInvoiceRepository;
@@ -132,6 +134,15 @@ public class UtilityInvoiceServiceImpl implements UtilityInvoiceService {
                 () -> new EntityNotFoundException("Utility invoice with id " + id
                         + " doesn't exist in database")
         );
+    }
+
+    @Override
+    public List<UtilityInvoice> getUtilityInvoicesEntities(
+            Long propertyId, UtilityType utilityType, YearMonth month) {
+        LocalDate monthStart = month.atDay(1);
+        LocalDate monthEnd = month.atEndOfMonth();
+        return utilityInvoiceRepository.findAllByPropertyIdAndUtilityTypeAndDate(
+                propertyId, utilityType, monthStart, monthEnd);
     }
 
     private void checkInvoiceNumber(String invoiceNumber) {

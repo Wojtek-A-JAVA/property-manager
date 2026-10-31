@@ -17,4 +17,7 @@ public interface MeterReadingRepository extends JpaRepository<MeterReading, Long
 
     Optional<MeterReading> findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
             Long meterId, LocalDate localDate);
+
+    Optional<MeterReading> findFirstByMeterIdAndReadingDateAfterOrderByReadingDateAsc(
+            Long meterId, LocalDate readingDate);
 }

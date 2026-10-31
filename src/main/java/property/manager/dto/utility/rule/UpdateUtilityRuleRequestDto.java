@@ -17,6 +17,8 @@ public record UpdateUtilityRuleRequestDto(
         @NotNull
         UtilityType utilityType,
         @NotNull
+        UtilityType invoiceUtilityType,
+        @NotNull
         AllocationMethod allocationMethod,
         @NotNull
         Boolean unitMeterRequired,
@@ -28,7 +30,6 @@ public record UpdateUtilityRuleRequestDto(
         List<@Positive Long> unitIds,
         @NotNull
         YearMonth startMonth,
-        YearMonth endMonth,
-        String notes
+        YearMonth endMonth
 ) {
 }

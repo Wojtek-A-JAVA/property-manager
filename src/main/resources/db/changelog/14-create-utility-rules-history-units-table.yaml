@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: utility-rules-history-units
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: utility_rules_history_units
+            columns:
+              - column:
+                  name: utility_rules_history_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: utility_rules_history_units
+            baseColumnNames: utility_rules_history_id
+            referencedTableName: utility_rules_history
+            referencedColumnNames: id
+            constraintName: fk_utility_rules_history_units_utility_rules_history
+        - addUniqueConstraint:
+            tableName: utility_rules_history_units
+            columnNames: utility_rules_history_id, unit_id
+            constraintName: uk_utility_rules_history_units_rule_unit

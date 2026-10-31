@@ -1,4 +1,4 @@
-package property.manager.controler;
+package property.manager.controller;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -47,7 +47,7 @@ public class UnitCostController {
     @GetMapping
     public List<UnitCostResponseDto> getUnitCosts(
             @ModelAttribute UnitCostFilterRequestDto filter) {
-        return unitCostService.getUnitCosts(filter);
+        return unitCostService.getUnitCostsByUtilityRuleId(filter);
     }
 
     @PutMapping("/{id}")

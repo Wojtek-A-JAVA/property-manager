@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import property.manager.dto.cost.property.PropertyCostFilterDto;
 import property.manager.dto.cost.property.PropertyCostResponseDto;
 import property.manager.dto.cost.property.UpdatePropertyCostRequestDto;
 import property.manager.exception.EntityAlreadyExistsException;
+import property.manager.exception.InvalidMeterDataException;
 import property.manager.exception.InvalidPropertyCostDataException;
 import property.manager.mapper.PropertyCostMapper;
 import property.manager.model.Property;
@@ -166,6 +168,41 @@ public class PropertyCostServiceImpl implements PropertyCostService {
             propertyCostList.add(savedCost);
         }
         return propertyCostList;
+    }
+
+    @Override
+    public List<PropertyCost> getPropertyCostsEntities(Long id) {
+        return propertyCostRepository.findAllByUtilityInvoice_Id(id);
+    }
+
+    @Override
+    public void deletePropertyCostsByUtilityInvoiceId(Long utilityInvoiceId) {
+        propertyCostRepository.deleteAllByUtilityInvoice_Id(utilityInvoiceId);
+    }
+
+    @Override
+    public List<PropertyCost> getOrCreatePropertyCosts(
+            List<UtilityInvoice> invoices, YearMonth billingMonth) {
+        if (invoices == null || invoices.isEmpty()) {
+            throw new InvalidMeterDataException("Utility invoice for property with id "
+                    + ", billing month " + billingMonth + " doesn't exist in database");
+        }
+        List<PropertyCost> propertyCosts = new ArrayList<>();
+        for (UtilityInvoice invoice : invoices) {
+            Optional<PropertyCost> existingPropertyCost = propertyCostRepository
+                    .findByUtilityInvoiceIdAndBillingMonth(invoice.getId(), billingMonth);
+            if (existingPropertyCost.isPresent()) {
+                propertyCosts.add(existingPropertyCost.get());
+                continue;
+            }
+            List<PropertyCost> createdPropertyCosts = createPropertyCosts(invoice);
+            createdPropertyCosts.stream()
+                    .filter(propertyCost ->
+                            propertyCost.getBillingMonth().equals(billingMonth))
+                    .findFirst()
+                    .ifPresent(propertyCosts::add);
+        }
+        return propertyCosts;
     }
 
     private Property getProperty(Long id) {
