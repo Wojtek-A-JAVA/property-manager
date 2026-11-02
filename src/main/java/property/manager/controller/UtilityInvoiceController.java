@@ -3,6 +3,7 @@ package property.manager.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,23 +26,27 @@ public class UtilityInvoiceController {
     private final UtilityInvoiceService utilityInvoiceService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UtilityInvoiceResponseDto createUtilityInvoice(
             @RequestBody @Valid CreateUtilityInvoiceRequestDto request) {
         return utilityInvoiceService.createUtilityInvoice(request);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UtilityInvoiceResponseDto getUtilityInvoice(@PathVariable Long id) {
         return utilityInvoiceService.getUtilityInvoice(id);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<UtilityInvoiceResponseDto> getUtilityInvoices(
             @ModelAttribute UtilityInvoiceFilterDto filter) {
         return utilityInvoiceService.getUtilityInvoices(filter);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UtilityInvoiceResponseDto updateUtilityInvoice(
             @PathVariable Long id,
             @RequestBody @Valid UpdateUtilityInvoiceRequestDto request) {

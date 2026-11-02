@@ -3,6 +3,7 @@ package property.manager.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,12 +28,14 @@ public class UtilityRuleController {
     private final UtilityRuleService utilityRuleService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     UtilityRuleResponseDto createUtilityRule(
             @Valid @RequestBody CreateUtilityRuleRequestDto request) {
         return utilityRuleService.createUtilityRule(request);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<UtilityRuleResponseDto> getUtilityRules(
             @RequestParam Long propertyId,
             @RequestParam(required = false) UtilityType utilityType) {
@@ -40,11 +43,13 @@ public class UtilityRuleController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UtilityRuleResponseDto getUtilityRule(@PathVariable Long id) {
         return utilityRuleService.getUtilityRule(id);
     }
 
     @PatchMapping("/{id}/end-month")
+    @PreAuthorize("hasRole('ADMIN')")
     public UtilityRuleResponseDto setUtilityRuleEndMonth(
             @PathVariable Long id,
             @RequestBody @Valid UtilityRuleEndMonthRequestDto request) {
@@ -52,6 +57,7 @@ public class UtilityRuleController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UtilityRuleResponseDto updateUtilityRule(
             @PathVariable Long id,
             @RequestBody @Valid UpdateUtilityRuleRequestDto request) {

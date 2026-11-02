@@ -3,6 +3,7 @@ package property.manager.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,35 +29,41 @@ public class UnitCostController {
     private final UnitCostService unitCostService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UnitCostResponseDto createUnitCost(
             @RequestBody @Valid CreateUnitCostRequestDto request) {
         return unitCostService.createUnitCost(request);
     }
 
     @PostMapping("/multiple")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<UnitCostResponseDto> createUnitCosts(
             @RequestBody @Valid CreateUnitCostsRequestDto request) {
         return unitCostService.createUnitCosts(request);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UnitCostResponseDto getUnitCost(@PathVariable Long id) {
         return unitCostService.getUnitCost(id);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<UnitCostResponseDto> getUnitCosts(
             @ModelAttribute UnitCostFilterRequestDto filter) {
         return unitCostService.getUnitCostsByUtilityRuleId(filter);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public UnitCostResponseDto updateUnitCost(
             @PathVariable Long id, @RequestBody @Valid UpdateUnitCostRequestDto request) {
         return unitCostService.updateUnitCost(id, request);
     }
 
     @PatchMapping("/{id}/notes")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public UnitCostResponseDto updateUnitCostNotes(
             @PathVariable Long id, @RequestBody @Valid UpdateUnitCostNotesRequestDto request) {
         return unitCostService.updateUnitCostNotes(id, request);

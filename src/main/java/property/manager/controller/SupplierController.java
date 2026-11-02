@@ -3,6 +3,7 @@ package property.manager.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,23 +25,27 @@ public class SupplierController {
     private final SupplierService supplierService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public SupplierResponseDto createSupplier(
             @RequestBody @Valid CreateSupplierRequestDto request) {
         return supplierService.createSupplier(request);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SupplierResponseDto updateSupplier(
             @PathVariable Long id, @RequestBody @Valid UpdateSupplierRequestDto request) {
         return supplierService.updateSupplier(id, request);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<SupplierResponseDto> getSuppliers() {
         return supplierService.getSuppliers();
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public SupplierResponseDto changeSupplierStatus(
             @PathVariable Long id, @RequestBody @Valid SupplierStatusRequestDto request) {
         return supplierService.changeSupplierStatus(id, request);

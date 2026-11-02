@@ -74,7 +74,8 @@ public class SettlementServiceImpl implements SettlementService {
                 UtilityRuleHistory utilityRuleHistory = utilityRuleService.findUtilityRuleHistory(
                         request.id());
                 if (utilityRule.getStartMonth().isAfter(utilityRuleHistory.getStartMonth())) {
-                    utilityRuleService.checkUtilityRuleExistsInPast(utilityRule.getProperty().getId(),
+                    utilityRuleService.checkUtilityRuleExistsInPast(
+                            utilityRule.getProperty().getId(),
                             utilityRule.getUtilityType(), utilityRuleHistory.getStartMonth(),
                             utilityRule.getStartMonth().minusMonths(1L));
                 }
@@ -82,7 +83,8 @@ public class SettlementServiceImpl implements SettlementService {
                         && utilityRule.getEndMonth().isBefore(YearMonth.now())
                         && (utilityRuleHistory.getEndMonth() == null
                         || utilityRule.getEndMonth().isBefore(utilityRuleHistory.getEndMonth()))) {
-                    utilityRuleService.checkUtilityRuleExistsInFuture(utilityRule.getProperty().getId(),
+                    utilityRuleService.checkUtilityRuleExistsInFuture(
+                            utilityRule.getProperty().getId(),
                             utilityRule.getUtilityType(), utilityRule.getEndMonth().plusMonths(1L),
                             YearMonth.now());
                 }

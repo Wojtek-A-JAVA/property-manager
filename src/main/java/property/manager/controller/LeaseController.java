@@ -3,6 +3,7 @@ package property.manager.controller;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,21 +26,25 @@ public class LeaseController {
     private final LeaseService leaseService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public LeaseResponseDto createLease(@RequestBody @Valid CreateLeaseRequestDto request) {
         return leaseService.createLease(request);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public LeaseResponseDto getLease(@PathVariable Long id) {
         return leaseService.getLease(id);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<LeaseResponseDto> getLeases(@ModelAttribute LeaseFilterDto filter) {
         return leaseService.getLeases(filter);
     }
 
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public LeaseResponseDto changeLeaseStatus(
             @PathVariable Long id, @RequestBody @Valid LeaseStatusRequestDto request) {
         return leaseService.changeLeaseStatus(id, request);

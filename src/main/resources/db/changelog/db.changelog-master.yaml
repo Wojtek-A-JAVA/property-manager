@@ -42,6 +42,12 @@ databaseChangeLog:
       file: 14-create-utility-rules-history-units-table.yaml
       relativeToChangelogFile: true
   - include:
+      file: 15-create-roles-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 16-create-users-table.yaml
+      relativeToChangelogFile: true
+  - include:
       file: 99-insert-to-tables.yaml
       relativeToChangelogFile: true
       contextFilter: dev
