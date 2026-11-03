@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -111,6 +112,14 @@ public class GlobalExceptionHandler {
             message = "Invalid value. Allowed values: " + Arrays.toString(enumConstants);
         }
         return buildErrorResponse(request, HttpStatus.BAD_REQUEST, message);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAuthorizationDeniedException(
+            HttpServletRequest request, AuthorizationDeniedException ex) {
+        return buildErrorResponse(request, HttpStatus.FORBIDDEN,
+                "You don't have permission to perform this operation"
+        );
     }
 
     @ExceptionHandler(Exception.class)

@@ -1,5 +1,7 @@
 package property.manager.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import property.manager.dto.tenant.TenantResponseDto;
 import property.manager.dto.tenant.UpdateTenantRequestDto;
 import property.manager.service.TenantService;
 
+@Tag(name = "04. Tenants")
 @RestController
 @RequestMapping("/api/tenants")
 @RequiredArgsConstructor
@@ -25,18 +28,24 @@ public class TenantController {
 
     private final TenantService tenantService;
 
+    @Operation(summary = "Create tenant",
+            description = "Creates a new tenant")
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public TenantResponseDto createTenant(@RequestBody @Valid CreateTenantRequestDto request) {
         return tenantService.createTenant(request);
     }
 
+    @Operation(summary = "Get tenant",
+            description = "Returns a tenant by its id")
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public TenantResponseDto getTenant(@PathVariable Long id) {
         return tenantService.getTenant(id);
     }
 
+    @Operation(summary = "Update tenant", description = "Updates existing tenant."
+            + " This operation is restricted to ADMIN users.")
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public TenantResponseDto updateTenant(
@@ -44,12 +53,17 @@ public class TenantController {
         return tenantService.updateTenant(id, request);
     }
 
+    @Operation(summary = "Change tenant active status",
+            description = "Activates or deactivates an existing tenant."
+                    + " This operation is restricted to ADMIN users.")
     @PatchMapping("/{id}/active")
     @PreAuthorize("hasRole('ADMIN')")
     public TenantResponseDto toggleTenantActiveStatus(@PathVariable Long id) {
         return tenantService.toggleActiveStatus(id);
     }
 
+    @Operation(summary = "Get tenants",
+            description = "Returns tenants matching the provided filters")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public List<TenantResponseDto> getTenants(@ModelAttribute TenantFilterDto filter) {

@@ -1,5 +1,7 @@
 package property.manager.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +16,7 @@ import property.manager.dto.settlement.RecalculateSettlementRequestDto;
 import property.manager.dto.settlement.SettlementResponseDto;
 import property.manager.service.SettlementService;
 
+@Tag(name = "12. Settlements")
 @RestController
 @RequestMapping("/api/settlements")
 @RequiredArgsConstructor
@@ -21,6 +24,8 @@ public class SettlementController {
 
     private final SettlementService settlementService;
 
+    @Operation(summary = "Create settlement",
+            description = "Creates settlement costs for the specified utility invoice")
     @PostMapping("/{invoiceId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public SettlementResponseDto createSettlement(
@@ -28,6 +33,8 @@ public class SettlementController {
         return settlementService.createSettlement(invoiceId, request);
     }
 
+    @Operation(summary = "Recalculate settlement", description =
+                    "Recalculates settlement costs based on the selected recalculation source")
     @PatchMapping("/recalculate")
     @PreAuthorize("hasAnyRole('ADMIN', 'DEMO_ADMIN')")
     public SettlementResponseDto recalculate(
