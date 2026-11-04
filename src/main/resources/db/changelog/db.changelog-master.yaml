@@ -48,10 +48,6 @@ databaseChangeLog:
       file: 16-create-users-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 99-insert-to-tables.yaml
-      relativeToChangelogFile: true
-      contextFilter: dev
-  - include:
-      file: 100-insert-to-tables.yaml
+      file: insert-initial-data.yaml
       relativeToChangelogFile: true
       contextFilter: dev

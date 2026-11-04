@@ -64,7 +64,8 @@ The application also includes:
 - duplicate protection,
 - entity status handling,
 - filtering for selected modules,
-- Swagger / OpenAPI documentation.
+- Swagger / OpenAPI documentation,
+- automatic daily reset of demo data.
 
 ## Demo access
 
@@ -94,7 +95,6 @@ Some administrative operations are restricted to the ADMIN role.
 
 Further development will include:
 
-- automatic daily reset of demo data,
 - maintenance and expenses,
 - reminders and documents,
 - lease amendment history,
