@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-initial-data
+      author: wojtek-a
+      changes:
+        # ROLES
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: role_name, value: 'ADMIN' }
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: role_name, value: 'DEMO_ADMIN' }
+        # DEMO DATA
+        - sqlFile:
+            path: demo-data.sql
+            relativeToChangelogFile: true

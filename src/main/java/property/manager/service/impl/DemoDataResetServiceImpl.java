@@ -21,12 +21,12 @@ public class DemoDataResetServiceImpl implements DemoDataResetService {
     public void resetDemoData() {
         log.info("Starting demo data reset");
         jdbcTemplate.execute("""
-        TRUNCATE TABLE
-            unit_costs, property_costs, utility_rules_history_units, utility_rules_history,
-            utility_rule_units, utility_rules, meter_readings, meters, utility_invoices,
-            suppliers, leases, tenants, units, properties
-        RESTART IDENTITY
-        """);
+                TRUNCATE TABLE
+                    unit_costs, property_costs, utility_rules_history_units, utility_rules_history,
+                    utility_rule_units, utility_rules, meter_readings, meters, utility_invoices,
+                    suppliers, leases, tenants, units, properties
+                RESTART IDENTITY
+                """);
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.addScript(new ClassPathResource("db/changelog/demo-data.sql"));
         populator.execute(jdbcTemplate.getDataSource());
