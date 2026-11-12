@@ -12,40 +12,43 @@ databaseChangeLog:
       file: 04-create-leases-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 05-create-meters-table.yaml
+      file: 05-create-lease-units-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 06-create-meter-readings-table.yaml
+      file: 06-create-meters-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 07-create-utility-rules-table.yaml
+      file: 07-create-meter-readings-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 08-create-utility-rule-units-table.yaml
+      file: 08-create-utility-rules-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 09-create-suppliers-table.yaml
+      file: 09-create-utility-rule-units-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 10-create-utility-invoices-table.yaml
+      file: 10-create-suppliers-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 11-create-property-costs-table.yaml
+      file: 11-create-utility-invoices-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 12-create-unit-costs-table.yaml
+      file: 12-create-property-costs-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 13-create-utility-rules-history-table.yaml
+      file: 13-create-unit-costs-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 14-create-utility-rules-history-units-table.yaml
+      file: 14-create-utility-rules-history-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 15-create-roles-table.yaml
+      file: 15-create-utility-rules-history-units-table.yaml
       relativeToChangelogFile: true
   - include:
-      file: 16-create-users-table.yaml
+      file: 16-create-roles-table.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: 17-create-users-table.yaml
       relativeToChangelogFile: true
   - include:
       file: insert-initial-data.yaml

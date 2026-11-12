@@ -17,27 +17,36 @@ public class OpenApiConfig {
         Info info = new Info()
                 .title("Property Manager API")
                 .description("""
+                        Property Manager is a backend application for managing rental properties
+                        and automating everyday property management processes.
+
+                        It allows property owners or managers to manage properties, units, tenants
+                        and leases, as well as utility invoices, meters, meter readings and utility
+                        cost settlements. The application calculates how utility costs should be
+                        distributed between individual rental units based on configurable 
+                        allocation rules.
+                        <br><br>
                         <b>Features:</b>
                         <ul>
-                         <li>Property, unit, tenant and lease management</li>
-                         <li>Utility invoices, meters and meter readings</li>
-                         <li>Utility cost allocation and settlement recalculation</li>
-                         <li>JWT authentication and role-based authorization</li>
+                        <li>Property, unit, tenant and lease management</li>
+                        <li>Utility invoices, meters and meter readings</li>
+                        <li>Utility cost allocation and settlement recalculation</li>
+                        <li>JWT authentication and role-based authorization</li>
                         </ul>
-                        
+
                         <b>Demo access:</b><br>
                         A public DEMO_ADMIN account is available for testing the application.<br>
                         Username: <b>demo_admin</b><br>
                         Password: <b>demo_admin_password</b><br><br>
-                        
+                
                         Some administrative operations are available only for the ADMIN role
                         and are intentionally disabled for DEMO_ADMIN.<br><br>
-                      
+                
                         The demo database is automatically reset every 24 hours
                         to the default dataset defined by Liquibase migrations.<br><br>
-                        
+                
                         Built with Java 21, Spring Boot, Spring Security, JPA/Hibernate,
-                        PostgreSQL, Liquibase, MapStruct and OpenAPI/Swagger.<br><br>
+                        PostgreSQL, Liquibase, MapStruct and OpenAPI/Swagger.
                         """);
         return new OpenAPI().info(info)
                 .tags(List.of(

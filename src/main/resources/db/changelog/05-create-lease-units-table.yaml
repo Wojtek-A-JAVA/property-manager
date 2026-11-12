@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: lease-units-table
+      author: wojtek-a
+      changes:
+        - createTable:
+            tableName: lease_units
+            columns:
+              - column:
+                  name: lease_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: lease_units
+            baseColumnNames: lease_id
+            referencedTableName: leases
+            referencedColumnNames: id
+            constraintName: fk_lease_units_leases
+        - addForeignKeyConstraint:
+            baseTableName: lease_units
+            baseColumnNames: unit_id
+            referencedTableName: units
+            referencedColumnNames: id
+            constraintName: fk_lease_units_units
+        - addUniqueConstraint:
+            tableName: lease_units
+            columnNames: lease_id, unit_id
+            constraintName: uk_lease_units_lease_unit

@@ -1,6 +1,6 @@
 package property.manager.repository;
 
-import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -11,13 +11,13 @@ import property.manager.model.MeterReading;
 public interface MeterReadingRepository extends JpaRepository<MeterReading, Long>,
         JpaSpecificationExecutor<MeterReading> {
 
-    boolean existsByMeterIdAndReadingDate(Long meterId, LocalDate readingDate);
+    boolean existsByMeterIdAndReadingMonth(Long meterId, YearMonth readingMonth);
 
-    Optional<MeterReading> findByMeterIdAndReadingDate(Long meterId, LocalDate readingDate);
+    Optional<MeterReading> findByMeterIdAndReadingMonth(Long meterId, YearMonth readingMonth);
 
-    Optional<MeterReading> findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
-            Long meterId, LocalDate localDate);
+    Optional<MeterReading> findFirstByMeterIdAndReadingMonthBeforeOrderByReadingMonthDesc(
+            Long meterId, YearMonth readingMonth);
 
-    Optional<MeterReading> findFirstByMeterIdAndReadingDateAfterOrderByReadingDateAsc(
-            Long meterId, LocalDate readingDate);
+    Optional<MeterReading> findFirstByMeterIdAndReadingMonthAfterOrderByReadingMonthAsc(
+            Long meterId, YearMonth readingMonth);
 }

@@ -109,8 +109,7 @@ public class SettlementServiceImpl implements SettlementService {
                 checkUtilityTypeListIsEmpty(request.utilityTypes());
                 MeterReading meterReading = meterService.getReadingEntityById(request.id());
                 Meter meter = meterReading.getMeter();
-                YearMonth billingMonth = YearMonth.from(
-                        meterReading.getReadingDate()).minusMonths(1);
+                YearMonth billingMonth = meterReading.getReadingMonth().minusMonths(1);
                 Unit unit = meter.getUnit();
                 UtilityRule utilityRule;
                 if (meter.getUnit() == null) {

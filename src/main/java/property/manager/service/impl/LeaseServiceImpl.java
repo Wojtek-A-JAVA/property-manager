@@ -1,6 +1,7 @@
 package property.manager.service.impl;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +42,10 @@ public class LeaseServiceImpl implements LeaseService {
         }
         checkDates(request.startDate(), request.endDate());
         Tenant tenant = getActiveTenant(request.tenantId());
-        Unit unit = getAvailableUnit(request);
+        List<Unit> units = getAvailableUnits(request);
         Lease lease = leaseMapper.toEntity(request);
         lease.setTenant(tenant);
-        lease.setUnit(unit);
+        lease.setUnits(units);
         if (lease.getLeaseStatus() == null) {
             lease.setLeaseStatus(LeaseStatus.ACTIVE);
         }
@@ -79,27 +80,31 @@ public class LeaseServiceImpl implements LeaseService {
         return leaseMapper.toDto(savedLease);
     }
 
-    private Unit getAvailableUnit(CreateLeaseRequestDto request) {
-        Unit unit = unitRepository.findById(request.unitId()).orElseThrow(
-                () -> new EntityNotFoundException("Unit with id " + request.unitId()
-                        + " not found in database"));
-        if (!unit.isActive()) {
-            throw new InactiveEntityException("Unit with id " + request.unitId() + " is inactive");
-        }
-        Optional<Lease> conflictingLease = leaseRepository.findConflictingLease(
-                unit.getId(), LeaseStatus.ACTIVE, request.startDate());
-        if (conflictingLease.isPresent()) {
-            Lease lease = conflictingLease.get();
-            String endDate;
-            if (lease.getEndDate() == null) {
-                endDate = " with no end date";
-            } else {
-                endDate = " till " + lease.getEndDate();
+    private List<Unit> getAvailableUnits(CreateLeaseRequestDto request) {
+        List<Unit> units = new ArrayList<>();
+        for (Long unitId : request.unitIds()) {
+            Unit unit = unitRepository.findById(unitId).orElseThrow(
+                    () -> new EntityNotFoundException("Unit with id " + unitId
+                            + " not found in database"));
+            if (!unit.isActive()) {
+                throw new InactiveEntityException("Unit with id " + unitId + " is inactive");
             }
-            throw new EntityAlreadyExistsException("Unit with id " + unit.getId()
-                    + " is already leased" + endDate);
+            Optional<Lease> conflictingLease = leaseRepository.findConflictingLease(
+                    unit.getId(), LeaseStatus.ACTIVE, request.startDate());
+            if (conflictingLease.isPresent()) {
+                Lease lease = conflictingLease.get();
+                String endDate;
+                if (lease.getEndDate() == null) {
+                    endDate = " with no end date";
+                } else {
+                    endDate = " till " + lease.getEndDate();
+                }
+                throw new EntityAlreadyExistsException("Unit with id " + unit.getId()
+                        + " is already leased" + endDate);
+            }
+            units.add(unit);
         }
-        return unit;
+        return units;
     }
 
     private Tenant getActiveTenant(Long id) {

@@ -1,7 +1,7 @@
 package property.manager.specification;
 
 import jakarta.persistence.criteria.Predicate;
-import java.time.LocalDate;
+import java.time.YearMonth;
 import org.springframework.data.jpa.domain.Specification;
 import property.manager.model.MeterReading;
 
@@ -15,20 +15,21 @@ public class MeterReadingSpecification {
         };
     }
 
-    public static Specification<MeterReading> isWithinPeriod(LocalDate fromDate, LocalDate toDate) {
+    public static Specification<MeterReading> isWithinPeriod(
+            YearMonth fromMonth, YearMonth toMonth) {
         return (root, query, criteriaBuilder) -> {
-            if (fromDate == null && toDate == null) {
+            if (fromMonth == null && toMonth == null) {
                 return criteriaBuilder.conjunction();
             }
             Predicate predicate = criteriaBuilder.conjunction();
-            if (fromDate != null) {
+            if (fromMonth != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("readingDate"), fromDate)
+                        root.get("readingMonth"), fromMonth)
                 );
             }
-            if (toDate != null) {
+            if (toMonth != null) {
                 predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(
-                        root.get("readingDate"), toDate)
+                        root.get("readingMonth"), toMonth)
                 );
             }
             return predicate;

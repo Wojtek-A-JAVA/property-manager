@@ -31,7 +31,8 @@ public class LeaseSpecification {
             if (unitId == null) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.equal(root.get("unit").get("id"), unitId);
+            query.distinct(true);
+            return criteriaBuilder.equal(root.join("units").get("id"), unitId);
         };
     }
 

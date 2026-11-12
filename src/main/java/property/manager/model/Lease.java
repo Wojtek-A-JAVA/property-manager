@@ -9,10 +9,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,9 +33,11 @@ public class Lease {
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;
+    @ManyToMany
+    @JoinTable(name = "lease_units",
+            joinColumns = @JoinColumn(name = "lease_id"),
+            inverseJoinColumns = @JoinColumn(name = "unit_id"))
+    private List<Unit> units = new ArrayList<>();
 
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;

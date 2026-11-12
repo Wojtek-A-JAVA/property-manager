@@ -14,11 +14,12 @@ public interface LeaseRepository extends JpaRepository<Lease, Long>,
         JpaSpecificationExecutor<Lease> {
 
     @Query("""
-            SELECT l
+            SELECT DISTINCT l
             FROM Lease l
-            WHERE l.unit.id = :unitId
-              AND l.leaseStatus = :status
-              AND (l.endDate IS NULL OR l.endDate >= :startDate)
+            JOIN l.units u
+            WHERE u.id = :unitId
+            AND l.leaseStatus = :status
+            AND (l.endDate IS NULL OR l.endDate >= :startDate)
             """)
     Optional<Lease> findConflictingLease(Long unitId, LeaseStatus status, LocalDate startDate);
 

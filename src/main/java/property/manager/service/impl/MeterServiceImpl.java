@@ -2,6 +2,7 @@ package property.manager.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -86,20 +87,20 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public MeterReadingResponseDto createReading(Long id, CreateMeterReadingRequestDto request) {
-        if (meterReadingRepository.existsByMeterIdAndReadingDate(
-                id, request.readingDate())) {
+        if (meterReadingRepository.existsByMeterIdAndReadingMonth(
+                id, request.readingMonth())) {
             throw new EntityAlreadyExistsException("Meter reading for meter with id " + id
-                    + " and date " + request.readingDate()
+                    + " and month " + request.readingMonth()
                     + " already exists in database");
         }
-        if (request.readingDate().isAfter(LocalDate.now())) {
-            throw new InvalidMeterDataException("Meter reading is after today");
+        if (request.readingMonth().isAfter(YearMonth.from(LocalDate.now()))) {
+            throw new InvalidMeterDataException("Meter reading month cannot be in the future");
         }
         Meter meter = getMeterEntityById(id);
         if (!meter.isActive()) {
             throw new InactiveEntityException("Meter with id " + id + " is inactive");
         }
-        checkReadingValues(meter.getId(), request.value(), request.readingDate());
+        checkReadingValues(meter.getId(), request.value(), request.readingMonth());
         MeterReading meterReading = meterReadingMapper.toEntity(request);
         meterReading.setMeter(meter);
         MeterReading savedMeterReading = meterReadingRepository.save(meterReading);
@@ -114,11 +115,11 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public List<MeterReadingResponseDto> getReadings(MeterReadingFilterDto filter) {
-        checkDates(filter.fromDate(), filter.toDate());
+        checkDates(filter.fromMonth(), filter.toMonth());
         Specification<MeterReading> specification = MeterReadingSpecification
                 .hasMeterId(filter.meterId())
                 .and(MeterReadingSpecification
-                        .isWithinPeriod(filter.fromDate(), filter.toDate()));
+                        .isWithinPeriod(filter.fromMonth(), filter.toMonth()));
         List<MeterReading> meterReadings = meterReadingRepository.findAll(specification);
         return meterReadingMapper.toDtoList(meterReadings);
     }
@@ -128,7 +129,7 @@ public class MeterServiceImpl implements MeterService {
             Long readingId, UpdateMeterReadingRequestDto request) {
         MeterReading meterReading = getReadingEntityById(readingId);
         checkReadingValues(
-                meterReading.getMeter().getId(), request.value(), meterReading.getReadingDate());
+                meterReading.getMeter().getId(), request.value(), meterReading.getReadingMonth());
         meterReading.setValue(request.value());
         meterReading.setNotes(request.notes());
         MeterReading savedMeterReading = meterReadingRepository.save(meterReading);
@@ -195,24 +196,24 @@ public class MeterServiceImpl implements MeterService {
         return unit;
     }
 
-    private void checkDates(LocalDate startDate, LocalDate endDate) {
-        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            throw new InvalidMeterDataException("Meter reading end date " + endDate
-                    + " is before start date " + startDate);
+    private void checkDates(YearMonth fromMonth, YearMonth toMonth) {
+        if (fromMonth != null && toMonth != null && toMonth.isBefore(fromMonth)) {
+            throw new InvalidMeterDataException("Meter reading to month " + toMonth
+                    + " is before from month " + fromMonth);
         }
     }
 
-    private void checkReadingValues(Long meterId, BigDecimal value, LocalDate readingDate) {
+    private void checkReadingValues(Long meterId, BigDecimal value, YearMonth readingMonth) {
         Optional<MeterReading> previousValue = meterReadingRepository
-                .findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
-                        meterId, readingDate);
+                .findFirstByMeterIdAndReadingMonthBeforeOrderByReadingMonthDesc(
+                        meterId, readingMonth);
         if (previousValue.isPresent() && value.compareTo(previousValue.get().getValue()) < 0) {
             throw new InvalidMeterDataException("Reading value can't be smaller than "
                     + "last value");
         }
         Optional<MeterReading> nextValue = meterReadingRepository
-                .findFirstByMeterIdAndReadingDateAfterOrderByReadingDateAsc(
-                        meterId, readingDate);
+                .findFirstByMeterIdAndReadingMonthAfterOrderByReadingMonthAsc(
+                        meterId, readingMonth);
         if (nextValue.isPresent() && value.compareTo(nextValue.get().getValue()) > 0) {
             throw new InvalidMeterDataException("Reading value can't be bigger than "
                     + "next value");

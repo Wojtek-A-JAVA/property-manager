@@ -334,17 +334,16 @@ public class UnitCostServiceImpl implements UnitCostService {
     }
 
     private BigDecimal calculateConsumption(Meter meter, PropertyCost propertyCost) {
-        LocalDate currentReadingDate =
-                propertyCost.getBillingMonth().plusMonths(1).atDay(1);
+        YearMonth currentReadingMonth = propertyCost.getBillingMonth().plusMonths(1L);
         MeterReading currentReading = meterReadingRepository
-                .findByMeterIdAndReadingDate(meter.getId(), currentReadingDate)
+                .findByMeterIdAndReadingMonth(meter.getId(), currentReadingMonth)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Meter reading for meter with id " + meter.getId()
-                                + " and date " + currentReadingDate
+                                + " and month " + currentReadingMonth
                                 + " doesn't exist in database"));
         MeterReading previousReading = meterReadingRepository
-                .findFirstByMeterIdAndReadingDateBeforeOrderByReadingDateDesc(
-                        meter.getId(), currentReadingDate)
+                .findFirstByMeterIdAndReadingMonthBeforeOrderByReadingMonthDesc(
+                        meter.getId(), currentReadingMonth)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Previous meter reading for meter with id "
                                 + meter.getId() + " doesn't exist in database"));

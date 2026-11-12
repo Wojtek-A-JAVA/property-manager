@@ -84,7 +84,7 @@ public class TenantServiceImpl implements TenantService {
         } else if (filter.active() != null && filter.type() != null) {
             tenantList = tenantRepository.findByActiveAndType(filter.active(), filter.type());
         } else {
-            tenantList = List.of();
+            tenantList = tenantRepository.findAll();
         }
         return tenantMapper.toDtoList(tenantList);
     }

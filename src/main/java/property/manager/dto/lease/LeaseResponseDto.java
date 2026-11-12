@@ -2,13 +2,14 @@ package property.manager.dto.lease;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import property.manager.model.LeaseStatus;
 import property.manager.model.VatRate;
 
 public record LeaseResponseDto(
         Long id,
         Long tenantId,
-        Long unitId,
+        List<Long> unitIds,
         LocalDate startDate,
         LocalDate endDate,
         BigDecimal rentNetAmount,

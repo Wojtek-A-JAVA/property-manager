@@ -3,10 +3,12 @@ package property.manager.dto.lease;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import property.manager.model.LeaseStatus;
 import property.manager.model.VatRate;
 
@@ -15,8 +17,8 @@ public record CreateLeaseRequestDto(
         @Positive
         Long tenantId,
         @NotNull
-        @Positive
-        Long unitId,
+        @NotEmpty
+        List<Long> unitIds,
         @NotNull
         LocalDate startDate,
         LocalDate endDate,

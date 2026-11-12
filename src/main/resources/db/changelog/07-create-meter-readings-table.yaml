@@ -19,8 +19,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: reading_date
-                  type: date
+                  name: reading_month
+                  type: varchar(7)
                   constraints:
                     nullable: false
               - column:
