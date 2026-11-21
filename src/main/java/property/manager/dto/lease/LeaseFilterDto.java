@@ -11,7 +11,6 @@ public record LeaseFilterDto(
         Long tenantId,
         @Positive
         Long unitId,
-        @Positive
         VatRate vatRate,
         LocalDate startDate,
         LocalDate endDate,

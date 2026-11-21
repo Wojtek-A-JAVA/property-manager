@@ -63,6 +63,12 @@ databaseChangeLog:
               - column:
                   name: notes
                   type: varchar(255)
+              - column:
+                  name: settlement_status
+                  type: varchar(50)
+                  defaultValue: UNSETTLED
+                  constraints:
+                    nullable: false
         - addForeignKeyConstraint:
             baseTableName: utility_invoices
             baseColumnNames: property_id

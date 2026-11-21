@@ -15,6 +15,7 @@ public interface UtilityInvoiceMapper {
     @Mapping(target = "property", ignore = true)
     @Mapping(target = "supplier", ignore = true)
     @Mapping(target = "unitPrice", ignore = true)
+    @Mapping(target = "settlementStatus", ignore = true)
     UtilityInvoice toEntity(CreateUtilityInvoiceRequestDto request);
 
     @Mapping(target = "propertyId", source = "property.id")

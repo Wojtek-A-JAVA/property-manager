@@ -19,6 +19,7 @@ import property.manager.exception.InvalidSettlementDataException;
 import property.manager.model.Meter;
 import property.manager.model.MeterReading;
 import property.manager.model.PropertyCost;
+import property.manager.model.SettlementStatus;
 import property.manager.model.Unit;
 import property.manager.model.UnitCost;
 import property.manager.model.UtilityInvoice;
@@ -209,6 +210,7 @@ public class SettlementServiceImpl implements SettlementService {
             }
             propertyCostIds.add(propertyCost.getId());
         }
+        utilityInvoice.setSettlementStatus(SettlementStatus.SETTLED);
         return new SettlementResponseDto(propertyCostIds, unitCostIds);
     }
 

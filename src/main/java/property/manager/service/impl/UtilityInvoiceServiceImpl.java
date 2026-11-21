@@ -17,6 +17,7 @@ import property.manager.exception.InactiveEntityException;
 import property.manager.exception.InvalidUtilityInvoiceDataException;
 import property.manager.mapper.UtilityInvoiceMapper;
 import property.manager.model.Property;
+import property.manager.model.SettlementStatus;
 import property.manager.model.Supplier;
 import property.manager.model.UtilityInvoice;
 import property.manager.model.UtilityType;
@@ -78,7 +79,6 @@ public class UtilityInvoiceServiceImpl implements UtilityInvoiceService {
     public UtilityInvoiceResponseDto updateUtilityInvoice(
             Long id, UpdateUtilityInvoiceRequestDto request) {
         UtilityInvoice invoice = getUtilityInvoiceEntity(id);
-
         LocalDate billingFrom =
                 request.billingFrom() != null ? request.billingFrom() : invoice.getBillingFrom();
         LocalDate billingTo =
@@ -86,17 +86,21 @@ public class UtilityInvoiceServiceImpl implements UtilityInvoiceService {
         LocalDate invoiceDate =
                 request.invoiceDate() != null ? request.invoiceDate() : invoice.getInvoiceDate();
         checkDates(billingFrom, billingTo, invoiceDate);
+        if (invoice.getSettlementStatus() == SettlementStatus.SETTLED
+                && (request.billingFrom() != null
+                && !request.billingFrom().equals(invoice.getBillingFrom())
+                || request.billingTo() != null
+                && !request.billingTo().equals(invoice.getBillingTo())
+                || request.amount() != null
+                && request.amount().compareTo(invoice.getAmount()) != 0
+                || request.consumption() != null
+                && (invoice.getConsumption() == null
+                || request.consumption().compareTo(invoice.getConsumption()) != 0))) {
+            invoice.setSettlementStatus(SettlementStatus.RECALCULATION_REQUIRED);
+        }
         invoice.setBillingFrom(billingFrom);
         invoice.setBillingTo(billingTo);
         invoice.setInvoiceDate(invoiceDate);
-
-        if (request.propertyId() != null) {
-            Property property = getProperty(request.propertyId());
-            invoice.setProperty(property);
-        }
-        if (request.utilityType() != null) {
-            invoice.setUtilityType(request.utilityType());
-        }
         checkInvoiceNumber(request.invoiceNumber());
         Long supplierId = request.supplierId() != null
                 ? request.supplierId() : invoice.getSupplier().getId();

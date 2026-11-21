@@ -7,10 +7,7 @@ import java.time.LocalDate;
 import property.manager.model.UtilityType;
 
 public record UpdateUtilityInvoiceRequestDto(
-        @Positive
-        Long propertyId,
-        UtilityType utilityType,
-        @Positive
+         @Positive
         Long supplierId,
         String invoiceNumber,
         LocalDate invoiceDate,

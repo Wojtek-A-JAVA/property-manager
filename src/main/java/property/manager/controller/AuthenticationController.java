@@ -1,5 +1,6 @@
 package property.manager.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,5 +26,11 @@ public class AuthenticationController {
     @PostMapping("/login")
     public UserLoginResponseDto login(@Valid @RequestBody UserLoginRequestDto request) {
         return authenticationService.authenticate(request);
+    }
+
+    @Hidden
+    @PostMapping("/demo")
+    public UserLoginResponseDto loginDemo() {
+        return authenticationService.authenticateDemo();
     }
 }

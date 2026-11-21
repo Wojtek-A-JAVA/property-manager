@@ -68,7 +68,9 @@ public class UtilityRuleServiceImpl implements UtilityRuleService {
 
     @Override
     public List<UtilityRuleResponseDto> getUtilityRules(Long propertyId, UtilityType utilityType) {
-        Property property = getProperty(propertyId);
+        propertyRepository.findById(propertyId).orElseThrow(
+                () -> new EntityNotFoundException("Property with id " + propertyId
+                        + " doesn't exist in database"));
         List<UtilityRule> rules;
         if (utilityType == null) {
             rules = utilityRuleRepository.findAllByPropertyId(propertyId);

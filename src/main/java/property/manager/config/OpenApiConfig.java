@@ -19,13 +19,18 @@ public class OpenApiConfig {
                 .description("""
                         Property Manager is a backend application for managing rental properties
                         and automating everyday property management processes.
-
+                
                         It allows property owners or managers to manage properties, units, tenants
                         and leases, as well as utility invoices, meters, meter readings and utility
                         cost settlements. The application calculates how utility costs should be
-                        distributed between individual rental units based on configurable 
+                        distributed between individual rental units based on configurable
                         allocation rules.
                         <br><br>
+                
+                        Prefer the UI? <a href="https://pm.andziak.pl" target="_blank">
+                        Try the live Property Manager demo</a>
+                        <br><br>
+                
                         <b>Features:</b>
                         <ul>
                         <li>Property, unit, tenant and lease management</li>
@@ -33,7 +38,7 @@ public class OpenApiConfig {
                         <li>Utility cost allocation and settlement recalculation</li>
                         <li>JWT authentication and role-based authorization</li>
                         </ul>
-
+                
                         <b>Demo access:</b><br>
                         A public DEMO_ADMIN account is available for testing the application.<br>
                         Username: <b>demo_admin</b><br>
@@ -75,7 +80,9 @@ public class OpenApiConfig {
                         new Tag().name("12. Settlements")
                                 .description("Utility settlement creation and recalculation"
                                         + " endpoints"),
-                        new Tag().name("13. Health Check")
+                        new Tag().name("13. Users")
+                                .description("User related endpoints"),
+                        new Tag().name("14. Health Check")
                                 .description("Application health check endpoint")
                 ))
                 .components(new Components().addSecuritySchemes("BearerAuth",

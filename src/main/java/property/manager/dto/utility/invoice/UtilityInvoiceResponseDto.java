@@ -2,6 +2,7 @@ package property.manager.dto.utility.invoice;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import property.manager.model.SettlementStatus;
 import property.manager.model.UtilityType;
 
 public record UtilityInvoiceResponseDto(
@@ -16,6 +17,7 @@ public record UtilityInvoiceResponseDto(
         BigDecimal amount,
         BigDecimal consumption,
         BigDecimal unitPrice,
-        String notes
+        String notes,
+        SettlementStatus settlementStatus
 ) {
 }

@@ -58,4 +58,8 @@ public class UtilityInvoice {
     private BigDecimal unitPrice;
 
     private String notes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "settlement_status", nullable = false)
+    private SettlementStatus settlementStatus = SettlementStatus.UNSETTLED;
 }

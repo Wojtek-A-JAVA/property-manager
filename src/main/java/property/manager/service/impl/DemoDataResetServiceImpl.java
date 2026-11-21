@@ -24,7 +24,7 @@ public class DemoDataResetServiceImpl implements DemoDataResetService {
                 TRUNCATE TABLE
                     unit_costs, property_costs, utility_rules_history_units, utility_rules_history,
                     utility_rule_units, utility_rules, meter_readings, meters, utility_invoices,
-                    suppliers, leases, tenants, units, properties
+                    suppliers, lease_units, leases, tenants, units, properties
                 RESTART IDENTITY
                 """);
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();

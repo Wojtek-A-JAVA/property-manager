@@ -5,4 +5,6 @@ import property.manager.dto.user.UserLoginResponseDto;
 
 public interface AuthenticationService {
     UserLoginResponseDto authenticate(UserLoginRequestDto request);
+
+    UserLoginResponseDto authenticateDemo();
 }

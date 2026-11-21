@@ -2,6 +2,7 @@ package property.manager.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +26,9 @@ public interface UtilityInvoiceRepository extends JpaRepository<UtilityInvoice, 
             """)
     List<UtilityInvoice> findAllByPropertyIdAndUtilityTypeAndDate(
             Long propertyId, UtilityType utilityType, LocalDate monthStart, LocalDate monthEnd);
+
+    @Query("SELECT MAX(ui.invoiceDate) FROM UtilityInvoice ui")
+    Optional<LocalDate> findMaxInvoiceDate();
+
+    List<UtilityInvoice> findByInvoiceDate(LocalDate lastInvoiceDate);
 }
