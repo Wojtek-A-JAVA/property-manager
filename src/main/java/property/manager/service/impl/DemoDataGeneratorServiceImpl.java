@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import property.manager.dto.settlement.CreateSettlementRequestDto;
@@ -24,6 +25,7 @@ import property.manager.service.DemoDataGeneratorService;
 import property.manager.service.SettlementService;
 
 @Service
+@Profile("!prod-priv")
 @RequiredArgsConstructor
 public class DemoDataGeneratorServiceImpl implements DemoDataGeneratorService {
 

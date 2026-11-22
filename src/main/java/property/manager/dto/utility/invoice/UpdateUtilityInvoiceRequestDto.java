@@ -4,7 +4,6 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import property.manager.model.UtilityType;
 
 public record UpdateUtilityInvoiceRequestDto(
          @Positive

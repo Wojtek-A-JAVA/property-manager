@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-role
+      author: wojtek-a
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM roles WHERE role_name = 'ADMIN'
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column: { name: role_name, value: 'ADMIN' }

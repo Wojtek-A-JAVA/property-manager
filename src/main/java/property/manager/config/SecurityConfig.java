@@ -3,6 +3,8 @@ package property.manager.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,6 +28,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final Environment environment;
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
@@ -37,22 +40,27 @@ public class SecurityConfig {
         return httpSecurity
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        authorize -> authorize
-                                .requestMatchers("/api/auth/login",
-                                        "/api/auth/demo",
-                                        "/error",
-                                        "/api/health",
-                                        "/api/health/**",
-                                        "/swagger-ui.html",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/"
-                                )
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
+                .authorizeHttpRequests(authorize -> {
+                    if (environment.acceptsProfiles(Profiles.of("prod-priv"))) {
+                        authorize.requestMatchers(
+                                "/api/auth/demo",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**"
+                        ).denyAll();
+                    } else {
+                        authorize.requestMatchers("/api/auth/demo").permitAll();
+                    }
+                    authorize.requestMatchers(
+                            "/api/auth/login",
+                            "/error",
+                            "/api/health",
+                            "/api/health/**",
+                            "/"
+                    ).permitAll();
+                    authorize.anyRequest().authenticated();
+                })
                 .exceptionHandling(exception ->
                         exception.authenticationEntryPoint(authenticationEntryPoint))
                 .sessionManagement(session ->

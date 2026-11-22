@@ -54,3 +54,6 @@ databaseChangeLog:
       file: insert-initial-data.yaml
       relativeToChangelogFile: true
       contextFilter: dev
+  - include:
+      file: insert-roles.yaml
+      relativeToChangelogFile: true

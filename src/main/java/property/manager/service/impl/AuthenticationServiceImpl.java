@@ -2,6 +2,9 @@ package property.manager.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +21,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
+    private final Environment environment;
     @Value("${demo.admin.username}")
     private String demoUsername;
     @Value("${demo.admin.password}")
@@ -30,6 +34,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserLoginResponseDto authenticateDemo() {
+        if (environment.acceptsProfiles(Profiles.of("prod-priv"))) {
+            throw new AccessDeniedException("Demo login is disabled");
+        }
         return new UserLoginResponseDto(getToken(demoUsername, demoPassword));
     }
 

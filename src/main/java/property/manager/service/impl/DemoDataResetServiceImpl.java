@@ -2,6 +2,7 @@ package property.manager.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import property.manager.service.DemoDataResetService;
 
 @Service
+@Profile("!prod-priv")
 @RequiredArgsConstructor
 @Slf4j
 public class DemoDataResetServiceImpl implements DemoDataResetService {
