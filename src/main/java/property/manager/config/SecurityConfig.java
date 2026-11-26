@@ -50,7 +50,12 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).denyAll();
                     } else {
-                        authorize.requestMatchers("/api/auth/demo").permitAll();
+                        authorize.requestMatchers("/api/auth/demo",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**"
+                        ).permitAll();
                     }
                     authorize.requestMatchers(
                             "/api/auth/login",
