@@ -1,0 +1,16 @@
+services:
+  app-private:
+    build: .
+    image: ${PRIVATE_IMAGE}
+    container_name: ${PRIVATE_CONTAINER}
+    restart: unless-stopped
+    env_file:
+      - .env.private
+    environment:
+      SPRING_PROFILES_ACTIVE: docker,prod-priv
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
